@@ -30,7 +30,7 @@ protobuf {
 }
 
 dependencies {
-    implementation 'io.grpc:grpc-netty-shaded:1.25.0'
+    implementation 'io.grpc:grpc-netty-shaded:1.25.0' //shaded includes SSL libraries
     implementation 'io.grpc:grpc-protobuf:1.25.0'
     implementation 'io.grpc:grpc-stub:1.25.0'
     compile 'io.grpc:grpc-services:1.25.0' // for reflection
