@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
+import io.grpc.protobuf.services.ProtoReflectionService;
 
 public class GreetServer {
 
@@ -11,6 +12,7 @@ public class GreetServer {
 
         Server server = ServerBuilder.forPort(50051)
             .addService(new GreetService())
+            .addService(ProtoReflectionService.newInstance()) // for reflection
             .build();
 
         server.start();
