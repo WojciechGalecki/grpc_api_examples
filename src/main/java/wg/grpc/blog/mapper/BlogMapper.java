@@ -1,6 +1,7 @@
 package wg.grpc.blog.mapper;
 
 import org.bson.Document;
+import org.bson.types.ObjectId;
 
 import com.proto.blog.Blog;
 
@@ -10,10 +11,17 @@ public class BlogMapper {
     private static final String TITLE = "title";
     private static final String CONTENT = "content";
 
-    public static Document mapFromBlog(Blog blog) {
+    public static Document mapFromBlogWithoutId(Blog blog) {
         return new Document(AUTHOR_ID, blog.getAuthorId())
             .append(TITLE, blog.getTitle())
             .append(CONTENT, blog.getContent());
+    }
+
+    public static Document mapFromBlog(Blog blog) {
+        Document blogDocument = mapFromBlogWithoutId(blog);
+        blogDocument.append(BLOG_ID, new ObjectId(blog.getId()));
+
+        return blogDocument;
     }
 
     public static Blog mapFromDocument(Document blogDocument) {

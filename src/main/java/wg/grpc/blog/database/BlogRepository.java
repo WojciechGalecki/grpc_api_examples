@@ -4,5 +4,6 @@ import org.bson.Document;
 
 public interface BlogRepository {
     String createBlog(Document blogDocument);
-    Document findBlog(String blogId) throws IllegalArgumentException;
+    Document findBlog(String blogId);
+    boolean updateBlog(Document blogToUpdate);
 }

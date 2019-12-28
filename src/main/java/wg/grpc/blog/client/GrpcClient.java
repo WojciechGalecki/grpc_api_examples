@@ -2,6 +2,7 @@ package wg.grpc.blog.client;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.grpc.StatusRuntimeException;
 
 public interface GrpcClient {
     static ManagedChannel createChannel(int port) {
@@ -11,5 +12,5 @@ public interface GrpcClient {
             .build();
     }
 
-    void run();
+    void run() throws StatusRuntimeException;
 }

@@ -9,6 +9,7 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.result.UpdateResult;
 
 public class MongodbBlogRepository implements BlogRepository {
     private static final String MONGO_DB_URL = "mongodb://user:user@localhost:27017";
@@ -20,9 +21,6 @@ public class MongodbBlogRepository implements BlogRepository {
     private final MongoDatabase blogDb = mongoClient.getDatabase(BLOG_DB);
     private final MongoCollection<Document> blogTable = blogDb.getCollection(BLOG_TABLE);
 
-    public MongodbBlogRepository() {
-    }
-
     @Override
     public String createBlog(Document blogDocument) {
         blogTable.insertOne(blogDocument);
@@ -31,8 +29,15 @@ public class MongodbBlogRepository implements BlogRepository {
     }
 
     @Override
-    public Document findBlog(String blogId) throws IllegalArgumentException {
+    public Document findBlog(String blogId) {
         return blogTable.find(eq(BLOG_ID, new ObjectId(blogId)))
             .first();
+    }
+
+    @Override
+    public boolean updateBlog(Document blogToUpdate) {
+        UpdateResult updateResult = blogTable.replaceOne(eq(BLOG_ID, blogToUpdate.getObjectId(BLOG_ID)), blogToUpdate);
+
+        return updateResult.getModifiedCount() == 1;
     }
 }
