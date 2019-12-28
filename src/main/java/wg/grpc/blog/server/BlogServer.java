@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
+import io.grpc.protobuf.services.ProtoReflectionService;
 
 public class BlogServer {
     private static final int PORT = 50051;
@@ -17,6 +18,7 @@ public class BlogServer {
     private static void runServer() throws IOException, InterruptedException {
         Server server = ServerBuilder.forPort(BlogServer.PORT)
             .addService(new BlogService())
+            .addService(ProtoReflectionService.newInstance())
             .build();
 
         server.start();

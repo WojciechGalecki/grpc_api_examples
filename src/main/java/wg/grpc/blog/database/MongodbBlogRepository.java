@@ -5,6 +5,7 @@ import static com.mongodb.client.model.Filters.eq;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
@@ -47,5 +48,10 @@ public class MongodbBlogRepository implements BlogRepository {
         DeleteResult deleteResult = blogTable.deleteOne(eq(BLOG_ID, new ObjectId(blogId)));
 
         return deleteResult.getDeletedCount() == 1;
+    }
+
+    @Override
+    public FindIterable<Document> findAll() {
+        return blogTable.find();
     }
 }

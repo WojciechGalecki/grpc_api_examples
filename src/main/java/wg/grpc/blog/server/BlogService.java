@@ -18,6 +18,8 @@ import com.proto.blog.CreateBlogRequest;
 import com.proto.blog.CreateBlogResponse;
 import com.proto.blog.DeleteBlogRequest;
 import com.proto.blog.DeleteBlogResponse;
+import com.proto.blog.ListBlogRequest;
+import com.proto.blog.ListBlogResponse;
 import com.proto.blog.ReadBlogRequest;
 import com.proto.blog.ReadBlogResponse;
 import com.proto.blog.UpdateBlogRequest;
@@ -115,12 +117,24 @@ public class BlogService extends BlogServiceGrpc.BlogServiceImplBase {
 
                 responseObserver.onNext(response);
                 responseObserver.onCompleted();
-
             } else {
                 createErrorResponse(responseObserver, Status.NOT_FOUND,
                     String.format("The blog with id: %s was not found", blogId));
             }
         }
+    }
+
+    @Override
+    public void listBlog(ListBlogRequest request, StreamObserver<ListBlogResponse> responseObserver) {
+        log.info("Received list blog request");
+
+        blogRepository.findAll().iterator().forEachRemaining(document -> responseObserver.onNext(
+            ListBlogResponse.newBuilder()
+                .setBlog(BlogMapper.mapFromDocument(document))
+                .build()
+        ));
+
+        responseObserver.onCompleted();
     }
 
     private boolean validateBlogId(StreamObserver<?> responseObserver, String blogId) {

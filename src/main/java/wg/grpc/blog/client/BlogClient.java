@@ -11,6 +11,7 @@ import com.proto.blog.CreateBlogRequest;
 import com.proto.blog.CreateBlogResponse;
 import com.proto.blog.DeleteBlogRequest;
 import com.proto.blog.DeleteBlogResponse;
+import com.proto.blog.ListBlogRequest;
 import com.proto.blog.ReadBlogRequest;
 import com.proto.blog.ReadBlogResponse;
 import com.proto.blog.UpdateBlogRequest;
@@ -27,13 +28,13 @@ public class BlogClient implements GrpcClient {
     }
 
     public static void main(String[] args) {
-       BlogClient blogClient = new BlogClient();
+        BlogClient blogClient = new BlogClient();
 
-       try {
-           blogClient.run();
-       } catch (StatusRuntimeException e) {
-           log.warning("Got error from server: " + e.getMessage());
-       }
+        try {
+            blogClient.run();
+        } catch (StatusRuntimeException e) {
+            log.warning("Got error from server: " + e.getMessage());
+        }
     }
 
     @Override
@@ -61,8 +62,12 @@ public class BlogClient implements GrpcClient {
 
         updateBlog(validBlogToUpdate);
 
-        //delete
-        deleteBlog(existingBlogId);
+        // delete
+        //deleteBlog(existingBlogId);
+
+        // list blog
+        listBlog();
+
 
         CHANNEL.shutdown();
     }
@@ -103,5 +108,11 @@ public class BlogClient implements GrpcClient {
 
         DeleteBlogResponse response = blogClient.deleteBlog(request);
         log.info("Deleted blog response: " + response.toString());
+    }
+
+    private void listBlog() {
+        blogClient.listBlog(ListBlogRequest.newBuilder().build()).forEachRemaining(response -> {
+            log.info("Received blog: " + response.getBlog());
+        });
     }
 }
