@@ -1,6 +1,9 @@
 package wg.grpc.blog.database;
 
+import static com.mongodb.client.model.Filters.eq;
+
 import org.bson.Document;
+import org.bson.types.ObjectId;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
@@ -13,9 +16,9 @@ public class MongodbBlogRepository implements BlogRepository {
     private static final String BLOG_TABLE = "blog";
     private static final String BLOG_ID = "_id";
 
-    private MongoClient mongoClient = MongoClients.create(MONGO_DB_URL);
-    private MongoDatabase blogDb = mongoClient.getDatabase(BLOG_DB);
-    private MongoCollection<Document> blogTable = blogDb.getCollection(BLOG_TABLE);
+    private final MongoClient mongoClient = MongoClients.create(MONGO_DB_URL);
+    private final MongoDatabase blogDb = mongoClient.getDatabase(BLOG_DB);
+    private final MongoCollection<Document> blogTable = blogDb.getCollection(BLOG_TABLE);
 
     public MongodbBlogRepository() {
     }
@@ -25,5 +28,11 @@ public class MongodbBlogRepository implements BlogRepository {
         blogTable.insertOne(blogDocument);
 
         return blogDocument.getObjectId(BLOG_ID).toString();
+    }
+
+    @Override
+    public Document findBlog(String blogId) throws IllegalArgumentException {
+        return blogTable.find(eq(BLOG_ID, new ObjectId(blogId)))
+            .first();
     }
 }

@@ -11,11 +11,10 @@ public class BlogServer {
     private static final Logger log = Logger.getLogger(BlogServer.class.getName());
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        BlogServer blogServer = new BlogServer();
-        blogServer.runServer();
+        runServer();
     }
 
-    private void runServer() throws IOException, InterruptedException {
+    private static void runServer() throws IOException, InterruptedException {
         Server server = ServerBuilder.forPort(BlogServer.PORT)
             .addService(new BlogService())
             .build();

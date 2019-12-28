@@ -3,16 +3,17 @@ package wg.grpc.blog.client;
 import java.util.logging.Logger;
 
 import io.grpc.ManagedChannel;
-import wg.grpc.blog.server.IGrpcClient;
 
 import com.proto.blog.Blog;
 import com.proto.blog.BlogServiceGrpc;
 import com.proto.blog.CreateBlogRequest;
 import com.proto.blog.CreateBlogResponse;
+import com.proto.blog.ReadBlogRequest;
+import com.proto.blog.ReadBlogResponse;
 
-public class BlogClient implements IGrpcClient {
+public class BlogClient implements GrpcClient {
     private static final Logger log = Logger.getLogger(BlogClient.class.getName());
-    private final ManagedChannel CHANNEL = IGrpcClient.createChannel(50051);
+    private final ManagedChannel CHANNEL = GrpcClient.createChannel(50051);
 
     private BlogServiceGrpc.BlogServiceBlockingStub blogClient;
 
@@ -34,17 +35,33 @@ public class BlogClient implements IGrpcClient {
             .setContent("Hello world")
             .build();
 
-        createBlog(blogToCreate);
+        String existingBlogId = createBlog(blogToCreate);
+
+        readBlog(existingBlogId);
+        readBlog("unknown");
 
         CHANNEL.shutdown();
     }
 
-    private void createBlog(Blog blog) {
+    private String createBlog(Blog blog) {
         CreateBlogRequest request = CreateBlogRequest.newBuilder()
             .setBlog(blog)
             .build();
 
         CreateBlogResponse response = blogClient.createBlog(request);
         log.info("Create blog response: " + response.toString());
+
+        return response.getBlog().getId();
+    }
+
+    private Blog readBlog(String blogId) {
+        ReadBlogRequest request = ReadBlogRequest.newBuilder()
+            .setBlogId(blogId)
+            .build();
+
+        ReadBlogResponse response = blogClient.readBlog(request);
+        log.info("Read blog response: " + response.toString());
+
+        return response.getBlog();
     }
 }
