@@ -16,6 +16,8 @@ import com.proto.blog.Blog;
 import com.proto.blog.BlogServiceGrpc;
 import com.proto.blog.CreateBlogRequest;
 import com.proto.blog.CreateBlogResponse;
+import com.proto.blog.DeleteBlogRequest;
+import com.proto.blog.DeleteBlogResponse;
 import com.proto.blog.ReadBlogRequest;
 import com.proto.blog.ReadBlogResponse;
 import com.proto.blog.UpdateBlogRequest;
@@ -90,6 +92,30 @@ public class BlogService extends BlogServiceGrpc.BlogServiceImplBase {
 
                 responseObserver.onNext(response);
                 responseObserver.onCompleted();
+            } else {
+                createErrorResponse(responseObserver, Status.NOT_FOUND,
+                    String.format("The blog with id: %s was not found", blogId));
+            }
+        }
+    }
+
+    @Override
+    public void deleteBlog(DeleteBlogRequest request, StreamObserver<DeleteBlogResponse> responseObserver) {
+        String blogId = request.getBlogId();
+        log.info("Received delete blog request");
+
+        if (validateBlogId(responseObserver, blogId)) {
+            log.info("Deleting blog...");
+
+            if (blogRepository.deleteBlog(blogId)) {
+                log.info("Successfully deleted blog");
+                DeleteBlogResponse response = DeleteBlogResponse.newBuilder()
+                    .setBlogId(blogId)
+                    .build();
+
+                responseObserver.onNext(response);
+                responseObserver.onCompleted();
+
             } else {
                 createErrorResponse(responseObserver, Status.NOT_FOUND,
                     String.format("The blog with id: %s was not found", blogId));

@@ -9,6 +9,8 @@ import com.proto.blog.Blog;
 import com.proto.blog.BlogServiceGrpc;
 import com.proto.blog.CreateBlogRequest;
 import com.proto.blog.CreateBlogResponse;
+import com.proto.blog.DeleteBlogRequest;
+import com.proto.blog.DeleteBlogResponse;
 import com.proto.blog.ReadBlogRequest;
 import com.proto.blog.ReadBlogResponse;
 import com.proto.blog.UpdateBlogRequest;
@@ -59,6 +61,9 @@ public class BlogClient implements GrpcClient {
 
         updateBlog(validBlogToUpdate);
 
+        //delete
+        deleteBlog(existingBlogId);
+
         CHANNEL.shutdown();
     }
 
@@ -89,5 +94,14 @@ public class BlogClient implements GrpcClient {
 
         UpdateBlogResponse response = blogClient.updateBlog(request);
         log.info("Update blog response: " + response.toString());
+    }
+
+    private void deleteBlog(String blogId) {
+        DeleteBlogRequest request = DeleteBlogRequest.newBuilder()
+            .setBlogId(blogId)
+            .build();
+
+        DeleteBlogResponse response = blogClient.deleteBlog(request);
+        log.info("Deleted blog response: " + response.toString());
     }
 }

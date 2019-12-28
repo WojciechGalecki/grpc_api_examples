@@ -9,6 +9,7 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 
 public class MongodbBlogRepository implements BlogRepository {
@@ -39,5 +40,12 @@ public class MongodbBlogRepository implements BlogRepository {
         UpdateResult updateResult = blogTable.replaceOne(eq(BLOG_ID, blogToUpdate.getObjectId(BLOG_ID)), blogToUpdate);
 
         return updateResult.getModifiedCount() == 1;
+    }
+
+    @Override
+    public boolean deleteBlog(String blogId) {
+        DeleteResult deleteResult = blogTable.deleteOne(eq(BLOG_ID, new ObjectId(blogId)));
+
+        return deleteResult.getDeletedCount() == 1;
     }
 }

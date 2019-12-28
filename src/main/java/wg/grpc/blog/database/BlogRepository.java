@@ -6,4 +6,5 @@ public interface BlogRepository {
     String createBlog(Document blogDocument);
     Document findBlog(String blogId);
     boolean updateBlog(Document blogToUpdate);
+    boolean deleteBlog(String blogId);
 }
