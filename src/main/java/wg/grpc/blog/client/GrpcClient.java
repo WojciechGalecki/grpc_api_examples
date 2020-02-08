@@ -7,7 +7,7 @@ import io.grpc.StatusRuntimeException;
 public interface GrpcClient {
     static ManagedChannel createChannel(int port) {
         return ManagedChannelBuilder.forAddress("localhost", port)
-            // disable SSL/TLS - for local development
+            // disable SSL/TLS
             .usePlaintext()
             .build();
     }
