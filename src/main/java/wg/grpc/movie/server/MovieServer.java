@@ -1,5 +1,6 @@
 package wg.grpc.movie.server;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 
@@ -15,6 +16,10 @@ public class MovieServer {
         Server server = ServerBuilder.forPort(50051)
             .addService(new MovieService())
             .addService(ProtoReflectionService.newInstance()) // for reflection
+            //.useTransportSecurity(
+            //    new File("ssl/server.crt"),   // uncomment to run server over SSL
+            //    new File("ssl/server.pem")
+            //)
             .build();
 
         server.start();
